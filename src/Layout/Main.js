@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Navbar from "../Shared/Navbar";
 import { FaUserFriends, FaCommentAlt } from "react-icons/fa";
 import { HiChat, HiUserCircle, HiOutlineHome, HiBookmark, HiTemplate } from "react-icons/hi";
@@ -36,6 +36,12 @@ const Main = () => {
             </li>
             <li>
               <a><FaCommentAlt className="text-2xl"/> All Comments</a>
+            </li>
+            <li>
+              <a>All Comments</a>
+            </li>
+            <li>
+              <Link to={'/register'}>Register</Link>
             </li>
           </ul>
         </div>

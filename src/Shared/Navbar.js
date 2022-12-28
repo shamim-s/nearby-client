@@ -31,25 +31,31 @@ const Navbar = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
              <li>
-              <a><HiOutlineHome className="text-2xl"/> Home</a>
+              <Link><HiOutlineHome className="text-2xl"/> Home</Link>
             </li>
             <li>
-              <a><HiUserCircle className="text-2xl"/> Profile</a>
+              <Link><HiUserCircle className="text-2xl"/> Profile</Link>
             </li>
             <li>
-              <a><FaUserFriends className="text-2xl"/> Friends</a>
+              <Link><FaUserFriends className="text-2xl"/> Friends</Link>
             </li>
             <li>
-              <a><HiChat className="text-2xl"/> Message</a>
+              <Link><HiChat className="text-2xl"/> Message</Link>
             </li>
             <li>
-              <a><HiBookmark className="text-2xl"/> Saved Posts</a>
+              <Link><HiBookmark className="text-2xl"/> Saved Posts</Link>
             </li>
             <li>
-              <a><HiTemplate className="text-2xl"/> Your Posts</a>
+              <Link><HiTemplate className="text-2xl"/> Your Posts</Link>
             </li>
             <li>
-              <a><FaCommentAlt className="text-xl"/> All Comments</a>
+              <Link><FaCommentAlt className="text-xl"/> All Comments</Link>
+            </li>
+            <li>
+              <Link>Login</Link>
+            </li>
+            <li>
+              <Link to={'/register'}>Register</Link>
             </li>
           </ul>
         </div>

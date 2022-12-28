@@ -9,21 +9,21 @@ const Context = ({children}) => {
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
 
-    const usersRegister = (auth, email, password) => {
+    const usersRegister = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password);
     }
 
-    const userLogin = (auth, email, password) => {
+    const userLogin = (email, password) => {
         return signInWithEmailAndPassword(auth, email, password);
     }
 
-    const userUpdate = (name) => {
+    const userUpdate = (name, image) => {
         return updateProfile(auth.currentUser, {
-            displayName: name
+            displayName: name, photoURL: image
         });
     }
 
-    const logOut = (auth) => {
+    const logOut = () => {
         return signOut(auth);
     }
 
