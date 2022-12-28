@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaUserFriends, FaCommentAlt } from "react-icons/fa";
 import { HiChat, HiUserCircle, HiOutlineHome, HiBookmark, HiTemplate } from "react-icons/hi";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../Context/Context";
 
 const Navbar = () => {
+  const {user} = useContext(AuthContext);
   return (
     <div className="navbar bg-primary flex justify-between items-center">
       <div className="navbar-start">
@@ -61,11 +64,14 @@ const Navbar = () => {
           />
         </div>
       </div>
-      <div className="avatar mr-2">
+      {
+        user?.email ? <div className="avatar mr-2">
         <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
           <img src="https://placeimg.com/192/192/people" />
         </div>
-      </div>
+      </div> :
+      <Link to={'/login'} className="btn bg-white text-primary shadow-md hover:bg-primary hover:text-white">Login</Link>
+      }
     </div>
   );
 };

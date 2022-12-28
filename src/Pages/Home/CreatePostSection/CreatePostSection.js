@@ -21,7 +21,7 @@ const CreatePostSection = () => {
     formData.append("image", image);
 
     fetch(
-      `https://api.imgbb.com/1/upload?key=d777afadbe30ad9542d5c324e05dc002`,
+      `https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_IMGBB_KEY}`,
       {
         method: "POST",
         body: formData,
