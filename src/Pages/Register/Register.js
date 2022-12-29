@@ -209,7 +209,7 @@ const Register = () => {
           Already have an account?
           <Link
             rel="noopener noreferrer"
-            href="#"
+            to={'/login'}
             className="underline text-primary"
           >
             Sign in

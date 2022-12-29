@@ -11,7 +11,7 @@ const UserProfile = () => {
   const {data: posts = [], refetch} = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/user/posts/${user.email}`);
+      const res = await fetch(`http://localhost:5000/user/posts/${user?.email}`);
       const data = await res.json();
       return data;
     }

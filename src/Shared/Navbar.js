@@ -1,11 +1,24 @@
 import React, { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { FaUserFriends, FaCommentAlt } from "react-icons/fa";
 import { HiChat, HiUserCircle, HiOutlineHome, HiBookmark, HiTemplate } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../Context/Context";
 
 const Navbar = () => {
-  const {user} = useContext(AuthContext);
+  const {user, logOut, setUser} = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logOut()
+    .then(() => {
+      setUser({});
+      toast.success('Logout Successfully');
+    })
+    .then(err => {
+      console.log(err);
+      toast.error(err.message);
+    })
+  }
   return (
     <div className="navbar bg-primary flex justify-between items-center">
       <div className="navbar-start">
@@ -31,10 +44,10 @@ const Navbar = () => {
             className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
           >
              <li>
-              <Link><HiOutlineHome className="text-2xl"/> Home</Link>
+              <Link to={'/'}><HiOutlineHome className="text-2xl"/> Home</Link>
             </li>
             <li>
-              <Link><HiUserCircle className="text-2xl"/> Profile</Link>
+              <Link to={`/user/${user?.email}`}><HiUserCircle className="text-2xl"/> Profile</Link>
             </li>
             <li>
               <Link><FaUserFriends className="text-2xl"/> Friends</Link>
@@ -51,12 +64,16 @@ const Navbar = () => {
             <li>
               <Link><FaCommentAlt className="text-xl"/> All Comments</Link>
             </li>
-            <li>
-              <Link>Login</Link>
+            {
+              user?.email ? <button onClick={handleLogout} className="btn btn-primary btn-sm">Log out</button> : <>
+              <li>
+              <Link to={'/login'}>Login</Link>
             </li>
             <li>
               <Link to={'/register'}>Register</Link>
             </li>
+              </>
+            }
           </ul>
         </div>
         <a className="btn btn-ghost normal-case text-xl text-white font-semibold">NearBy</a>
