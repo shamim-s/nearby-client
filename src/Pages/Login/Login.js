@@ -1,16 +1,37 @@
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from "react-hot-toast";
 import ButtonSpineer from '../../components/Spineers/ButtonSpineer';
 import { AuthContext } from '../../Context/Context';
 import Google from '../../images/google.png';
 
 const Login = () => {
     const {setUser, userLogin} = useContext(AuthContext);
-    const {register, handleSubmit, formState:{errors}} = useForm();
+    const {register, handleSubmit, formState:{errors}, reset} = useForm();
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const handleLogin = () => {
+    const handleLogin = (data) => {
+      console.log(data);
+
+      setLoading(true);
+      const email = data.email;
+      const password = data.password;
+
+      userLogin(email, password)
+      .then(result => {
+        const user = result.user;
+        setUser(user);
+        setLoading(false);
+        reset();
+        navigate('/');
+      })
+      .catch(err => {
+        console.log(err);
+        toast.success('Login Success');
+        setLoading(false);
+      })
 
     }
 
@@ -56,15 +77,6 @@ const Login = () => {
               className="input input-bordered input-primary w-full max-w-xs"
               {...register("password", {
                 required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be 6 characters",
-                },
-                pattern: {
-                  value: /(?=.*[A-Z])(?=.*[0-9])(.*[a-z])/,
-                  message:
-                    "Password must contain at least one uppercase letter and one lowercase letter",
-                },
               })}
             />
           </div>
