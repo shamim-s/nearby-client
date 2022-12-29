@@ -73,7 +73,7 @@ const Navbar = () => {
       {
         user?.email ? <div className="avatar mr-2">
         <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-          <img src="https://placeimg.com/192/192/people" />
+          <img src={user.photoURL} />
         </div>
       </div> :
       <Link to={'/login'} className="btn bg-white text-primary shadow-md hover:bg-primary hover:text-white">Login</Link>

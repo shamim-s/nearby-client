@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import { format } from "date-fns";
+import React, { useContext, useState } from "react";
 import ReactFileReader from "react-file-reader";
 import { useForm } from "react-hook-form";
+import ButtonSpineer from "../../../components/Spineers/ButtonSpineer";
 import ImgSpineer from "../../../components/Spineers/ImgSpineer";
+import { AuthContext } from "../../../Context/Context";
 
 const CreatePostSection = () => {
+  const {user} = useContext(AuthContext);
   const [imgPreview, setImgPreview] = useState(
     "https://i.ibb.co/PjP8H1V/Untitled-1-01.png"
   );
+
   const [imgLoading, setImgLoading] = useState(false);
+  const [postLoading, setPostLoading] = useState(false);
   const [postImg, setPostImg] = useState("");
-  const { register, handleSubmit } = useForm();
+
+  const { register, handleSubmit, reset } = useForm();
+  const date = format(new Date(), 'PP');
 
   //Image preview after selection any image and uploading to imgBB
   const handleInputImg = (e) => {
@@ -40,7 +48,31 @@ const CreatePostSection = () => {
   const handlePost = ( data) => {
     const img = postImg;
     const content = data.message;
-    console.log(img, content);
+
+    const postData = {
+      img,
+      content,
+      userImg: user.photoURL,
+      userName: user.displayName,
+      userEmail: user.email,
+      date,
+    };
+    setPostLoading(true);
+    fetch(`http://localhost:5000/user/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData)
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+      setImgPreview("https://i.ibb.co/PjP8H1V/Untitled-1-01.png");
+      reset();
+      setPostLoading(false);
+    })
+    console.log(postData);
   }
   return (
     <div className="mt-4 bg-white shadow-lg rounded-md p-4 w-96">
@@ -75,7 +107,9 @@ const CreatePostSection = () => {
           </div>
         </div>
         <button type="submit" className="btn btn-md btn-primary w-full mt-2">
-          Post
+          {
+            postLoading ? <ButtonSpineer/> : 'Post'
+          }
         </button>
       </form>
     </div>

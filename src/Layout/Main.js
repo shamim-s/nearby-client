@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import Navbar from "../Shared/Navbar";
 import { FaUserFriends, FaCommentAlt } from "react-icons/fa";
 import { HiChat, HiUserCircle, HiOutlineHome, HiBookmark, HiTemplate } from "react-icons/hi";
+import { AuthContext } from "../Context/Context";
 
 const Main = () => {
+  const {user} = useContext(AuthContext);
   return (
     <div>
       <Navbar />
@@ -17,10 +19,10 @@ const Main = () => {
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
           <ul className="menu p-4 w-80 font-semibold text-primary">
             <li>
-              <a><HiOutlineHome className="text-2xl"/> Home</a>
+              <Link to={'/'}><HiOutlineHome className="text-2xl"/> Home</Link>
             </li>
             <li>
-              <a><HiUserCircle className="text-2xl"/> Profile</a>
+              <Link to={`/user/${user.email}`}><HiUserCircle className="text-2xl"/> Profile</Link>
             </li>
             <li>
               <a><FaUserFriends className="text-2xl"/> Friends</a>
