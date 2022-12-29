@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 import ButtonSpineer from "../../components/Spineers/ButtonSpineer";
 import ImgSpineer from "../../components/Spineers/ImgSpineer";
 import { AuthContext } from "../../Context/Context";
-import Google from '../../images/google.png';
+import Google from "../../images/google.png";
 
 const Register = () => {
-  const {setUser, usersRegister, userUpdate} = useContext(AuthContext);
+  const { setUser, usersRegister, userUpdate } = useContext(AuthContext);
 
   const [imgPreview, setImgPreview] = useState(
     "https://i.ibb.co/PjP8H1V/Untitled-1-01.png"
@@ -17,7 +17,12 @@ const Register = () => {
   const [userImage, setUserImage] = useState();
   const [loading, setLoading] = useState(false);
 
-  const {register, handleSubmit, reset, formState:{errors}} = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   //User dispaly user input image and uploadt to database
   const handleImg = (e) => {
@@ -44,9 +49,8 @@ const Register = () => {
       });
   };
 
-  //User register 
+  //User register
   const handleRegister = (data) => {
-  
     const name = data.name;
     const email = data.email;
     const password = data.password;
@@ -55,50 +59,65 @@ const Register = () => {
 
     setLoading(true);
     usersRegister(email, password)
-    .then(result => {
-      const user = result.user;
+      .then((result) => {
+        const user = result.user;
 
-      userUpdate(name, userImage)
-      .then(() => {
-        setUser(user);
-        console.log(user);
-        toast.success("You are now registered");
-        setLoading(false);
-        reset();
+        const insertUser = {
+          name,
+          email,
+          img: userImage,
+        }
+        userUpdate(name, userImage)
+          .then(() => {
+            //Adding user to database
+            fetch(`http://localhost:5000/addUsers`, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+              },
+              body: JSON.stringify(insertUser)
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                console.log(data);
+                setUser(user);
+                console.log(user);
+                toast.success("You are now registered");
+                setLoading(false);
+                reset();
+                setImgPreview("https://i.ibb.co/PjP8H1V/Untitled-1-01.png");
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("Oops something went wrong");
+            setLoading(false);
+          });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
-        toast.error("Oops something went wrong");
+        toast.error(err.message);
         setLoading(false);
-      })
-
-    })
-    .catch(err => {
-      console.log(err);
-      toast.error(err.message);
-      setLoading(false);
-    })
-  }
+      });
+  };
 
   //Add user to dabase after register
-  const handleAddToDB = () => {
-    
-  }
+  const handleAddToDB = () => {};
 
   return (
-    <div>
-      <div className="w-full max-w-md p-8 space-y-3 rounded-xl">
-        <h1 className="text-2xl font-bold text-center">Sign up</h1>
-        <form
-        onSubmit={handleSubmit(handleRegister)}
-          className="space-y-6"
-        >
+    <div className="w-96 mt-5 mb-5">
+      <div className="max-w-md p-8 space-y-3 rounded-xl shadow-xl">
+        <h1 className="text-2xl font-bold text-center text-primary">Sign up</h1>
+        <form onSubmit={handleSubmit(handleRegister)} className="space-y-6">
           <div className="space-y-1 text-sm">
             <label htmlFor="name" className="label">
-              {
-                errors.name ? <span className="label-text text-red-500">Name is required</span> : 
+              {errors.name ? (
+                <span className="label-text text-red-500">
+                  Name is required
+                </span>
+              ) : (
                 <span className="label-text">Name</span>
-              }
+              )}
             </label>
             <input
               type="text"
@@ -106,15 +125,18 @@ const Register = () => {
               id="name"
               placeholder="name"
               className="input input-bordered input-primary w-full max-w-xs"
-              {...register('name', {required: true, maxLength: 20})}
+              {...register("name", { required: true, maxLength: 20 })}
             />
           </div>
           <div className="space-y-1 text-sm">
             <label htmlFor="email" className="label">
-              {
-                errors.email ? <span className="label-text text-red-500">Email is required</span> :
+              {errors.email ? (
+                <span className="label-text text-red-500">
+                  Email is required
+                </span>
+              ) : (
                 <span className="label-text">Email</span>
-              }
+              )}
             </label>
             <input
               type="email"
@@ -122,15 +144,18 @@ const Register = () => {
               id="email"
               placeholder="Email"
               className="input input-bordered input-primary w-full max-w-xs"
-              {...register('email', {required: true})}
+              {...register("email", { required: true })}
             />
           </div>
           <div className="space-y-1 text-sm">
             <label htmlFor="password" className="label">
-              {
-                errors.password ? <span className="label-text text-red-500">{errors.password?.message}</span> :
+              {errors.password ? (
+                <span className="label-text text-red-500">
+                  {errors.password?.message}
+                </span>
+              ) : (
                 <span className="label-text">Password</span>
-              }
+              )}
             </label>
             <input
               type="password"
@@ -138,16 +163,18 @@ const Register = () => {
               id="password"
               placeholder="Password"
               className="input input-bordered input-primary w-full max-w-xs"
-              {...register("password", {required: 'Password is required', 
+              {...register("password", {
+                required: "Password is required",
                 minLength: {
-                value: 6,
-                message: 'Password must be 6 characters'
-              },
-              pattern: {
-                value: /(?=.*[A-Z])(?=.*[0-9])(.*[a-z])/,
-                message: 'Password must contain at least one uppercase letter and one lowercase letter'
-              }
-               })}
+                  value: 6,
+                  message: "Password must be 6 characters",
+                },
+                pattern: {
+                  value: /(?=.*[A-Z])(?=.*[0-9])(.*[a-z])/,
+                  message:
+                    "Password must contain at least one uppercase letter and one lowercase letter",
+                },
+              })}
             />
           </div>
           <div className="mr-4 mx-auto">
@@ -169,25 +196,23 @@ const Register = () => {
             />
           </div>
           <button className="btn btn-primary w-full">
-            {
-              loading ? <ButtonSpineer/> : 'Sign up'
-            }
+            {loading ? <ButtonSpineer /> : "Sign up"}
           </button>
         </form>
         <div className="divider">OR</div>
         <div className="flex justify-center space-x-4">
           <button aria-label="Log in with Google" className="p-3 rounded-sm">
-            <img src={Google} className="w-10" alt=""/>
+            <img src={Google} className="w-10" alt="" />
           </button>
         </div>
         <p className="text-sm text-center sm:px-6">
-          Already have an account? 
+          Already have an account?
           <Link
             rel="noopener noreferrer"
             href="#"
             className="underline text-primary"
           >
-             Sign in
+            Sign in
           </Link>
         </p>
       </div>
