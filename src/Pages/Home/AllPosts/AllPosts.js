@@ -12,7 +12,6 @@ const AllPosts = () => {
         }
     });
 
-    console.log(posts);
     return (
         <div>
             {

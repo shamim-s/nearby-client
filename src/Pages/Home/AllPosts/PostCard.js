@@ -1,9 +1,44 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../Context/Context';
+import { HiOutlineHeart, HiHeart } from "react-icons/hi";
 
 const PostCard = ({post}) => {
     const {user} = useContext(AuthContext);
-    const {content, date, img, userEmail, userImg, userName} = post;
+    const {content, date, img, userEmail, userImg, userName, _id} = post;
+
+    const [likes, setLikes] = useState([]);
+    const [currentUserLiked, setCurrentUserLiked] = useState(false);
+
+    useEffect(()=> {
+      fetch(`http://localhost:5000/post/${_id}`)
+      .then(res => res.json())
+      .then(data => setLikes(data))
+    },[likes])
+
+    const handleLike = () => {
+      const postInfo = {
+        likedUserName: user.displayName,
+        likedUserEmail: user.email,
+        PostId: _id,
+      }
+        fetch(`http://localhost:5000/post/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postInfo)
+                  })
+                 .then(res => res.json())
+                 .then(data => console.log(data))
+    }
+
+    const handleTest = () => {
+      const isLiked = likes.find(like => like.likedUserEmail === user.email)
+      if (isLiked) {
+        setCurrentUserLiked(true);
+      }
+    }
+
     return (
         <div className="mt-5 mb-5 w-96 mx-auto">
       <div className="rounded-md shadow-xl">
@@ -42,19 +77,29 @@ const PostCard = ({post}) => {
         <div className="p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <button
-                type="button"
-                title="Like post"
-                className="flex items-center justify-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="w-5 h-5 fill-current"
-                >
-                  <path d="M453.122,79.012a128,128,0,0,0-181.087.068l-15.511,15.7L241.142,79.114l-.1-.1a128,128,0,0,0-181.02,0l-6.91,6.91a128,128,0,0,0,0,181.019L235.485,449.314l20.595,21.578.491-.492.533.533L276.4,450.574,460.032,266.94a128.147,128.147,0,0,0,0-181.019ZM437.4,244.313,256.571,425.146,75.738,244.313a96,96,0,0,1,0-135.764l6.911-6.91a96,96,0,0,1,135.713-.051l38.093,38.787,38.274-38.736a96,96,0,0,1,135.765,0l6.91,6.909A96.11,96.11,0,0,1,437.4,244.313Z"></path>
-                </svg>
-              </button>
+
+             {
+              currentUserLiked ?  <button
+              type="button"
+              onClick={handleLike}
+              title="Like post"
+              className="flex items-center justify-center"
+            >
+             <HiOutlineHeart className=' text-2xl'/>
+            </button> :
+            
+            <button
+            type="button"
+            title="Like post"
+            onClick={handleTest}
+            className="flex items-center justify-center"
+          >
+           <HiHeart className='text-red-500 text-2xl'/>
+          </button>
+
+
+             }
+
               <button
                 type="button"
                 title="Share post"
@@ -103,9 +148,8 @@ const PostCard = ({post}) => {
                 />
               </div>
               <span className="text-sm">
-                Liked by
-                <span className="font-semibold">Mamba UI</span>and
-                <span className="font-semibold">86 others</span>
+                Total Like
+                <span className="font-semibold"> {likes.length}</span>
               </span>
             </div>
           </div>
@@ -117,7 +161,7 @@ const PostCard = ({post}) => {
             <input
               type="text"
               placeholder="Add a comment..."
-              className="w-full py-0.5  border-none rounded text-sm pl-0"
+              className="w-full py-0.5 border-none rounded text-sm pl-2"
             />
           </div>
         </div>

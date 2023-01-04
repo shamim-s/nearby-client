@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ButtonSpineer from "../../components/Spineers/ButtonSpineer";
 import ImgSpineer from "../../components/Spineers/ImgSpineer";
 import { AuthContext } from "../../Context/Context";
@@ -16,6 +16,7 @@ const Register = () => {
   const [imgLoading, setImgLoading] = useState(false);
   const [userImage, setUserImage] = useState();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -86,6 +87,7 @@ const Register = () => {
                 setLoading(false);
                 reset();
                 setImgPreview("https://i.ibb.co/PjP8H1V/Untitled-1-01.png");
+                navigate("/");
               });
           })
           .catch((err) => {
@@ -100,9 +102,6 @@ const Register = () => {
         setLoading(false);
       });
   };
-
-  //Add user to dabase after register
-  const handleAddToDB = () => {};
 
   return (
     <div className="w-96 mt-5 mb-5">
